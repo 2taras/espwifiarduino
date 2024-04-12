@@ -1,0 +1,15 @@
+{
+    "idf.flashType": "UART",
+    "idf.port": "/dev/ttyUSB0",
+    "files.associations": {
+        "led_strip.h": "c",
+        "stdio.h": "c",
+        "nvs_flash.h": "c",
+        "esp_websocket_client.h": "c",
+        "esp_wifi.h": "c",
+        "esp_err.h": "c",
+        "stdint.h": "c",
+        "semaphore.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "disabled"
+}
