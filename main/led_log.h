@@ -1,4 +1,4 @@
-#ifndef LED_LOG_H_   /* Include guard */
+#ifndef LED_LOG_H_
 #define LED_LOG_H_
 
 #include "math.h"
@@ -18,4 +18,4 @@ void led_set_color(int color, long time, float blink_int);
 void led_worker();
 bool set_led_state(int new_state);
 
-#endif // FOO_H_
+#endif

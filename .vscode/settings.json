@@ -9,7 +9,8 @@
         "esp_wifi.h": "c",
         "esp_err.h": "c",
         "stdint.h": "c",
-        "semaphore.h": "c"
+        "semaphore.h": "c",
+        "at_parcer.h": "c"
     },
     "C_Cpp.errorSquiggles": "disabled",
     "idf.adapterTargetName": "esp32"
