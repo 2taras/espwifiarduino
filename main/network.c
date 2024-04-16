@@ -15,6 +15,9 @@ esp_websocket_client_config_t ws_cfg = {
 
 esp_websocket_client_handle_t client;
 
+char ws_room[17] = "";
+char ws_addr[65] = "";
+
 void (*ws_data_callback)(char*, size_t);
 
 void register_data_callback(void(*callback)(char*, size_t)){
@@ -31,8 +34,9 @@ static void websocket_event_handler(void *handler_args, esp_event_base_t base, i
     switch (event_id) {
     case WEBSOCKET_EVENT_CONNECTED:
         ESP_LOGI("ws", "WEBSOCKET_EVENT_CONNECTED");
-        char output1[] = "connect 1";
-        esp_websocket_client_send_text(client, output1, sizeof(output1)-1, portMAX_DELAY);
+        char output1[32] = "connect ";
+        strcat(output1, ws_room);
+        esp_websocket_client_send_text(client, output1, strlen(output1), portMAX_DELAY);
         set_led_state(CONNECTED);
         break;
     case WEBSOCKET_EVENT_DISCONNECTED:
@@ -71,18 +75,42 @@ bool network_working(){
     return esp_websocket_client_is_connected(client);
 }
 
-void load_ssid_pass(){
+void ws_addr_set(char* new_ws_addr){
+    strcpy(ws_addr, new_ws_addr);
+    set_val("ws_addr", (char*)new_ws_addr);
+    esp_websocket_client_stop(client);
+    esp_websocket_client_set_uri(client, new_ws_addr);
+    esp_websocket_client_start(client);
+}
+
+void ws_room_set(char* room){
+    set_val("ws_room", (char*)room);
+    memcpy(ws_room, room, strlen(room));
+    if(esp_websocket_client_is_connected(client)){
+        char output1[32] = "connect ";
+        strcat(output1, room);
+        esp_websocket_client_send_text(client, output1, strlen(output1), portMAX_DELAY);
+    }
+}
+
+void load_from_nvs(){
     char ssid[32], pass[32];
     get_val("wifi_ssid", (char*)&ssid, sizeof(ssid));
     get_val("wifi_pass", (char*)&pass, sizeof(pass));
+    get_val("ws_room", (char*)&ws_room, sizeof(ws_room));
+    get_val("ws_addr", (char*)ws_addr, sizeof(ws_addr));
     if(strcmp(ssid, "") != 0){
         memcpy(wifi_config.sta.ssid, ssid, sizeof(ssid));
         memcpy(wifi_config.sta.password, pass, sizeof(pass));
+    }
+    if(strcmp(ws_addr, "") != 0){
+        ws_cfg.uri = ws_addr;
     }
 }
 
 void init_network(){
     set_led_state(CONNECTING_WIFI);
+    load_from_nvs();
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
     esp_netif_create_default_wifi_sta();
@@ -94,7 +122,6 @@ void init_network(){
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_CONNECTED, &wifi_connected_callback, NULL));
     ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &got_ip_callback, NULL));
     ESP_ERROR_CHECK(esp_wifi_start());
-    load_ssid_pass();
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_connect());

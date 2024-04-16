@@ -14,8 +14,9 @@
 
 void reg_led_task();
 void led_init();
-void led_set_color(int color, long time, float blink_int);
+void led_set_color(int color, long time, float blink_int, int brigness);
 void led_worker();
 bool set_led_state(int new_state);
+bool set_brightness(int brightness_new);
 
 #endif
