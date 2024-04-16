@@ -7,7 +7,9 @@ void storage_init(){
 }
 
 void get_val(char* key, char* out, size_t str_len){
-    nvs_get_str(nvs_obj, key, out, &str_len);
+    if(nvs_get_str(nvs_obj, key, out, &str_len) != ESP_OK){
+        out[0] = '\0';
+    }
 }
 
 void set_val(char* key, char* val){

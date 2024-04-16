@@ -19,7 +19,9 @@ bool parse_command(char* input, int uart_num){
 
     if(strcmp(cmd, "AT+SSIDPASS=") == 0){
         char ssid[33], pass[33];
-        sscanf(data, "%[^,],%[^ ]", ssid, pass);
+        if(sscanf(data, "%[^,],%[^ ]", ssid, pass) == 1){
+            strcpy(pass, "");
+        }
         connect_ssid_pass(ssid, pass);
     }else if(strcmp(cmd, "AT+WSROOM=") == 0){
         char room[33];

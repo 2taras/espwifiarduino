@@ -57,7 +57,7 @@ static void websocket_event_handler(void *handler_args, esp_event_base_t base, i
 
 void wifi_disconnect_callback(){
     set_led_state(WIFI_ERROR);
-    ESP_ERROR_CHECK(esp_wifi_connect());
+    esp_wifi_connect();
     set_led_state(CONNECTING_WIFI);
 }
 
@@ -125,6 +125,7 @@ void init_network(){
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
     ESP_ERROR_CHECK(esp_wifi_connect());
+    ESP_LOGI("wifi", "%s, %s", wifi_config.sta.ssid, wifi_config.sta.password);
 }
 
 void connect_ssid_pass(char* ssid_inp, char* pass_inp){
@@ -138,5 +139,5 @@ void connect_ssid_pass(char* ssid_inp, char* pass_inp){
     memcpy(wifi_config.sta.password, pass, sizeof(pass));
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
-    ESP_ERROR_CHECK(esp_wifi_connect());
+    esp_wifi_connect();
 }

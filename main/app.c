@@ -1,7 +1,7 @@
 #include "app.h"
 
 uart_config_t uart_config = {
-    .baud_rate = 115200,
+    .baud_rate = 9600,
     .data_bits = UART_DATA_8_BITS,
     .parity    = UART_PARITY_DISABLE,
     .stop_bits = UART_STOP_BITS_1,
@@ -13,11 +13,13 @@ void uart_init(){
     ESP_ERROR_CHECK(uart_driver_install(HW_UART_NUM, 2048, 2048, 0, NULL, 0));
     ESP_ERROR_CHECK(uart_param_config(HW_UART_NUM, &uart_config));
     ESP_ERROR_CHECK(uart_set_pin(HW_UART_NUM, UART_RX, UART_TX, -1, -1));
-    uart_write_bytes(HW_UART_NUM, "123456789", sizeof("123456789"));
+    uart_write_bytes(HW_UART_NUM, "+UART_STARTED:1\n", sizeof("+UART_STARTED:1\n"));
 }
 
 void websocket_listener(char* inp, size_t len){
     ESP_LOGI("ws", "%.*s\n", len, inp);
+    uart_write_bytes(HW_UART_NUM, inp, len);
+    uart_write_bytes(HW_UART_NUM, "\n", 1);
 }
 
 void try_read_line(char* line, int max_len) {

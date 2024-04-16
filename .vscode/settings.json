@@ -1,6 +1,6 @@
 {
     "idf.flashType": "UART",
-    "idf.port": "/dev/ttyUSB0",
+    "idf.port": "/dev/ttyUSB1",
     "files.associations": {
         "led_strip.h": "c",
         "stdio.h": "c",
