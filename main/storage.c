@@ -13,6 +13,10 @@ void get_val(char* key, char* out, size_t str_len){
 }
 
 void set_val(char* key, char* val){
-    nvs_set_str(nvs_obj, key, val);
-    nvs_commit(nvs_obj);
+    char old_val[256];
+    get_val(key, old_val, sizeof(old_val));
+    if(strcmp(old_val, val) != 0){
+        nvs_set_str(nvs_obj, key, val);
+        nvs_commit(nvs_obj);
+    }
 }

@@ -34,7 +34,7 @@ void led_init(){
 
 void led_set_color(int color, long time, float blink_int, int brigness){
     int val = cos(time*blink_int)*(brigness/2) + brigness/2;
-    ESP_ERROR_CHECK(led_strip_set_pixel_hsv(led_strip, 0, color, brigness, val));
+    ESP_ERROR_CHECK(led_strip_set_pixel_hsv(led_strip, 0, color, 255, val));
     ESP_ERROR_CHECK(led_strip_refresh(led_strip));
 }
 
@@ -66,6 +66,13 @@ void led_worker(){
                 break;
             case WS_ERROR:
                 color = 150;
+                break;
+            case OTA_UPDATE:
+                color = 200;
+                blink_k = 0.01;
+                break;
+            case OTA_ERROR:
+                color = 220;
                 break;
         }
         led_set_color(color, time_ms, blink_k, brigness_now);

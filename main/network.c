@@ -141,3 +141,22 @@ void connect_ssid_pass(char* ssid_inp, char* pass_inp){
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
     esp_wifi_connect();
 }
+
+void start_ota(char* url){
+    set_led_state(OTA_UPDATE);
+    esp_http_client_config_t config = {
+        .url = url,
+    };
+    esp_https_ota_config_t ota_config = {
+        .http_config = &config,
+    };
+    ESP_LOGI("ota", "Attempting to download update from %s", config.url);
+    esp_err_t ret = esp_https_ota(&ota_config);
+    if (ret == ESP_OK) {
+        ESP_LOGI("ota", "OTA Succeed, Rebooting...");
+        esp_restart();
+    } else {
+        ESP_LOGE("ota", "Firmware upgrade failed");
+        set_led_state(OTA_ERROR);
+    }
+}

@@ -11,6 +11,8 @@
 #define CONNECTED 3
 #define WIFI_ERROR 4
 #define WS_ERROR 5
+#define OTA_UPDATE 6
+#define OTA_ERROR 7
 
 void reg_led_task();
 void led_init();

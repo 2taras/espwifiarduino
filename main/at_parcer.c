@@ -39,6 +39,10 @@ bool parse_command(char* input, int uart_num){
         char out[12];
         sprintf(out, "+NETCONN:%d\n", network_working());
         write_uart(uart_num, out, sizeof(out));
+    }else if(strcmp(cmd, "AT+STARTOTA=") == 0){
+        char ota_url[65];
+        sscanf(data, "%s", ota_url);
+        start_ota(ota_url);
     }else if(strcmp(cmd, "AT+RESET") == 0){
         esp_restart();
     }else{
